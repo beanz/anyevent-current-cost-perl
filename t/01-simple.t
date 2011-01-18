@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+#
+# Copyright (C) 2011 by Mark Hindess
+
+use strict;
+use constant {
+  DEBUG => $ENV{ANYEVENT_CURRENT_COST_TEST_DEBUG}
+};
+use Test::More tests => 4;
+use t::Helpers qw/test_error/;
+$ENV{PERL_ANYEVENT_MODEL} = 'Perl' unless ($ENV{PERL_ANYEVENT_MODEL});
+
+$|=1;
+use_ok('AnyEvent::CurrentCost');
+
+my $cv = AnyEvent->condvar;
+AnyEvent::CurrentCost->new(callback => sub { print $cv->send($_[0]) },
+                           device => 't/log/envy.reading.xml',
+                           on_error => sub { $cv->croak($_[1]) });
+my $msg = $cv->recv;
+is($msg->value, 2496, 'got correct reading');
+$cv = AnyEvent->condvar;
+
+# error not eof as we have outstanding read requests
+like(test_error(sub { $cv->recv }), qr/^Error: /, 'eof error');
+
+is(test_error(sub { AnyEvent::CurrentCost->new }),
+   q{AnyEvent::CurrentCost->new: 'callback' parameter is required},
+   'require callback parameter');
