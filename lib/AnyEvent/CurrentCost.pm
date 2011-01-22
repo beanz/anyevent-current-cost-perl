@@ -17,6 +17,9 @@ package AnyEvent::CurrentCost;
 
 AnyEvent module for reading from Current Cost energy meters.
 
+B<IMPORTANT:> This is an early release and the API is still subject to
+change.
+
 =cut
 
 use constant DEBUG => $ENV{ANYEVENT_CURRENT_COST_DEBUG};
@@ -54,6 +57,13 @@ sub new {
 
 sub DESTROY { shift->cleanup }
 
+=method C<cleanup()>
+
+This method attempts to destroy any resources in the event of a
+disconnection or fatal error.
+
+=cut
+
 sub cleanup {
   my $self = shift;
   print STDERR "cleanup\n" if DEBUG;
@@ -66,6 +76,12 @@ sub _error {
   $self->cleanup($message);
   $self->{on_error}->($fatal, $message) if ($self->{on_error});
 }
+
+=method C<open()>
+
+This method opens the serial port and configures it.
+
+=cut
 
 sub open {
   my $self = shift;
@@ -99,6 +115,10 @@ sub open {
                        $self->{callback}->(@_);
                        return;
                      });
+}
+
+sub _time_now {
+  AnyEvent->now;
 }
 
 =method C<anyevent_read_type()>
