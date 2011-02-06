@@ -9,6 +9,8 @@ Homepage: http://search.cpan.org/dist/AnyEvent-CurrentCost/
 
 Package: libanyevent-currentcost-perl
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}
+Depends: ${perl:Depends}, ${misc:Depends}, libdevice-currentcost-perl,
+ libanyevent-perl
 Description: AnyEvent::CurrentCost Perl Module
- Blah blah blah
+ AnyEvent modules for reading from energy meters made by Current Cost
+ (http://www.currentcost.com/).
