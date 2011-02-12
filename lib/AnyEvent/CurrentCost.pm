@@ -95,12 +95,6 @@ sub open {
                             $handle->destroy;
                             $self->_error($fatal, 'Error: '.$msg);
                           },
-                          on_eof => sub {
-                            my ($handle) = @_;
-                            print STDERR $handle.": eof\n" if DEBUG;
-                            $handle->destroy;
-                            $self->_error(0, 'eof');
-                          },
                           on_rtimeout => sub {
                             my $rbuf = \$handle->{rbuf};
                             print STDERR $handle, ": discarding '",
