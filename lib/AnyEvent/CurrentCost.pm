@@ -27,6 +27,7 @@ use base qw/Device::CurrentCost/;
 use AnyEvent;
 use AnyEvent::Handle;
 use Carp qw/croak/;
+use Sub::Name;
 
 =method C<new(%params)>
 
@@ -87,25 +88,24 @@ sub open {
   my $self = shift;
   my $fh = $self->SUPER::open;
   my $handle; $handle =
-    AnyEvent::Handle->new(
-                          fh => $fh,
-                          on_error => sub {
+    AnyEvent::Handle->new(fh => $fh,
+                          on_error => (subname 'handle_error' => sub {
                             my ($handle, $fatal, $msg) = @_;
                             print STDERR $handle.": error $msg\n" if DEBUG;
                             $handle->destroy;
                             $self->_error($fatal, 'Error: '.$msg);
-                          },
-                          on_rtimeout => sub {
+                          }),
+                          on_rtimeout => (subname 'handle_read_timeout' => sub {
                             my $rbuf = \$handle->{rbuf};
-                            print STDERR $handle, ": discarding '",
+                            warn $handle, ": discarding '",
                               (unpack 'H*', $$rbuf), "'\n" if DEBUG;
                             $$rbuf = '';
                             $handle->rtimeout(0);
-                          },
+                          }),
                          );
   $self->{handle} = $handle;
   $handle->push_read(ref $self => $self,
-                     sub {
+                     subname 'handle_reader' => sub {
                        $self->{callback}->(@_);
                        return;
                      });
@@ -124,7 +124,7 @@ method to read Current Cost messages.
 
 sub anyevent_read_type {
   my ($handle, $cb, $self) = @_;
-  sub {
+  subname 'read_type_reader' => sub {
     my $rbuf = \$handle->{rbuf};
     $handle->rtimeout($self->{discard_timeout});
     while (1) { # read all message from the buffer
