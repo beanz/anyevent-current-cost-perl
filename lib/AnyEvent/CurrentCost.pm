@@ -89,13 +89,13 @@ sub open {
   my $fh = $self->SUPER::open;
   my $handle; $handle =
     AnyEvent::Handle->new(fh => $fh,
-                          on_error => (subname 'handle_error' => sub {
+                          on_error => (subname 'on_error' => sub {
                             my ($handle, $fatal, $msg) = @_;
                             print STDERR $handle.": error $msg\n" if DEBUG;
                             $handle->destroy;
                             $self->_error($fatal, 'Error: '.$msg);
                           }),
-                          on_rtimeout => (subname 'handle_read_timeout' => sub {
+                          on_rtimeout => (subname 'on_rtimeout' => sub {
                             my $rbuf = \$handle->{rbuf};
                             warn $handle, ": discarding '",
                               (unpack 'H*', $$rbuf), "'\n" if DEBUG;
@@ -105,7 +105,7 @@ sub open {
                          );
   $self->{handle} = $handle;
   $handle->push_read(ref $self => $self,
-                     subname 'handle_reader' => sub {
+                     subname 'push_read_cb' => sub {
                        $self->{callback}->(@_);
                        return;
                      });
@@ -124,7 +124,7 @@ method to read Current Cost messages.
 
 sub anyevent_read_type {
   my ($handle, $cb, $self) = @_;
-  subname 'read_type_reader' => sub {
+  subname 'anyevent_read_type_reader' => sub {
     my $rbuf = \$handle->{rbuf};
     $handle->rtimeout($self->{discard_timeout});
     while (1) { # read all message from the buffer
