@@ -45,6 +45,13 @@ name.  The default is C</dev/ttyUSB0>.
 
 The callback to execute when a message is received.
 
+=item history_callback
+
+A function, taking a sensor id, a time interval and a hash reference
+of data as arguments, to be called every time a new complete set of
+history data becomes available.  The data hash reference has keys of
+the number of intervals ago and values of the reading at that time.
+
 =back
 
 =cut
