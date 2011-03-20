@@ -139,10 +139,10 @@ sub anyevent_read_type {
   my ($handle, $cb, $self) = @_;
   subname 'anyevent_read_type_reader' => sub {
     my $rbuf = \$handle->{rbuf};
-    $handle->rtimeout($self->{discard_timeout});
     while (1) { # read all message from the buffer
       print STDERR "Before: ", (unpack 'H*', $$rbuf||''), "\n" if DEBUG;
       my $res = $self->read_one($rbuf);
+      $handle->rtimeout($self->{discard_timeout}) if ($$rbuf && length $$rbuf);
       return unless ($res);
       print STDERR "After: ", (unpack 'H*', $$rbuf), "\n" if DEBUG;
       $res = $cb->($res) and return $res;
