@@ -113,7 +113,7 @@ sub _setup_handle {
                             my $rbuf = \$handle->{rbuf};
                             carp $handle, ": Discarding '", $$rbuf, "'\n";
                             $$rbuf = '';
-                            $handle->rtimeout(0);
+                            $handle->rtimeout(undef);
                           }),
                          );
   $self->{handle} = $handle;
@@ -142,9 +142,9 @@ sub anyevent_read_type {
     while (1) { # read all message from the buffer
       print STDERR "Before: ", (unpack 'H*', $$rbuf||''), "\n" if DEBUG;
       my $res = $self->read_one($rbuf);
-      $handle->rtimeout($self->{discard_timeout}) if ($$rbuf && length $$rbuf);
       return unless ($res);
       print STDERR "After: ", (unpack 'H*', $$rbuf), "\n" if DEBUG;
+      $handle->rtimeout($self->{discard_timeout}) if ($$rbuf && length $$rbuf);
       $res = $cb->($res) and return $res;
     }
   }
