@@ -2,7 +2,7 @@ libanyevent-currentcost-perl (1.110792-1) unstable; urgency=low
 
   * More discard timeout fixes.
 
- -- Mark Hindess <soft-debian@temporalanomaly.com>  Sun, 20 Mar 2011 13:10:00 +0000
+ -- Mark Hindess <soft-debian@temporalanomaly.com>  Sun, 20 Mar 2011 13:07:21 +0000
 
 libanyevent-currentcost-perl (1.110791-1) unstable; urgency=low
 
