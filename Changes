@@ -1,6 +1,7 @@
 Revision history for Perl extension AnyEvent::CurrentCost.
 
 {{$NEXT}}
+    - More discard timeout fixes.
 
 1.110791  2011-03-20 12:12:41 Europe/London
     - Avoid pointless discard timeout.
