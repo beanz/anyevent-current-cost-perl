@@ -2,7 +2,8 @@ Source: libanyevent-currentcost-perl
 Section: perl
 Priority: optional
 Build-Depends: debhelper (>= 5)
-Build-Depends-Indep: perl (>= 5.6.10-12)
+Build-Depends-Indep: perl (>= 5.6.10-12), libtest-requires-perl,
+  libtest-sharedfork-perl, libtest-warn-perl
 Maintainer: Mark Hindess <soft-debian@temporalanomaly.com>
 Standards-Version: 3.9.1.0
 Homepage: http://search.cpan.org/dist/AnyEvent-CurrentCost/
