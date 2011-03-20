@@ -26,7 +26,7 @@ use constant DEBUG => $ENV{ANYEVENT_CURRENT_COST_DEBUG};
 use base qw/Device::CurrentCost/;
 use AnyEvent;
 use AnyEvent::Handle;
-use Carp qw/croak/;
+use Carp qw/croak carp/;
 use Sub::Name;
 
 =method C<new(%params)>
@@ -60,6 +60,7 @@ sub new {
   my ($pkg, %p) = @_;
   croak $pkg.q{->new: 'callback' parameter is required} unless ($p{callback});
   my $self = $pkg->SUPER::new(%p);
+  $self->_setup_handle($p{filehandle}) if (exists $p{filehandle});
   $self;
 }
 
@@ -76,7 +77,7 @@ sub cleanup {
   my $self = shift;
   print STDERR "cleanup\n" if DEBUG;
   delete $self->{handle};
-  close $self->filehandle;
+  close $self->filehandle if (defined $self->filehandle);
 }
 
 sub _error {
@@ -94,6 +95,12 @@ This method opens the serial port and configures it.
 sub open {
   my $self = shift;
   my $fh = $self->SUPER::open;
+  $self->_setup_handle($self->SUPER::open);
+}
+
+sub _setup_handle {
+  my ($self, $fh) = @_;
+  $self->{filehandle} = $fh;
   my $handle; $handle =
     AnyEvent::Handle->new(fh => $fh,
                           on_error => (subname 'on_error' => sub {
@@ -104,8 +111,7 @@ sub open {
                           }),
                           on_rtimeout => (subname 'on_rtimeout' => sub {
                             my $rbuf = \$handle->{rbuf};
-                            warn $handle, ": discarding '",
-                              (unpack 'H*', $$rbuf), "'\n" if DEBUG;
+                            carp $handle, ": Discarding '", $$rbuf, "'\n";
                             $$rbuf = '';
                             $handle->rtimeout(0);
                           }),
