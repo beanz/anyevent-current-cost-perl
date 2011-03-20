@@ -35,6 +35,10 @@ Print the manual page.
 
 Make output more verbose.
 
+=item B<-history>
+
+Display completed history records when available.
+
 =back
 
 =head1 DESCRIPTION
@@ -50,14 +54,17 @@ use Device::CurrentCost::Constants;
 use AnyEvent::CurrentCost;
 use Getopt::Long;
 use Pod::Usage;
+use List::Util qw/max/;
 
 my $help;
 my $man;
 my $verbose = 0;
+my $history = 0;
 my %args;
 GetOptions('help|?' => \$help,
            'man' => \$man,
            'verbose+' => \$verbose,
+           'history+' => \$history,
            'classic' => sub { $args{type} = CURRENT_COST_CLASSIC },
           ) or pod2usage(2);
 pod2usage(1) if ($help);
@@ -67,6 +74,7 @@ my $device = shift || pod2usage({ -message => 'A device parameter is required',
 
 $|=1; # don't buffer output
 
+$args{history_callback} = \&history_callback if ($history);
 my $cc =
   AnyEvent::CurrentCost->new(device => $device, %args,
     on_error => sub {
@@ -80,10 +88,10 @@ my $cc =
     callback => sub {
       my ($msg) = @_;
       if ($verbose == 0) {
-        $msg->has_readings or next;
+        $msg->has_readings or return;
         print $msg->value, ' ', $msg->units, "\n";
       } elsif ($verbose == 1) {
-        $msg->has_readings or next;
+        $msg->has_readings or return;
         print 'Total: ', $msg->value, ' ', $msg->units, "\n";
         foreach my $phase (1..3) {
           print 'Phase ', $phase, ': ',
@@ -95,6 +103,26 @@ my $cc =
     });
 
 AnyEvent->condvar->recv;
+
+sub history_callback {
+  my ($sensor, $interval, $data) = @_;
+  my $max = 0;
+  my @rows = ();
+  foreach my $ago (sort { $a <=> $b } keys %{$data}) {
+    $max = max($max, $data->{$ago});
+    push @rows, [ $ago, $data->{$ago} ];
+  }
+  return if ($max == 0);
+  print "History: $sensor $interval ", scalar @rows, "\n";
+  foreach my $row (@rows) {
+    printf "  %3d %12.5f %-50s\n", @$row, bar($row->[1], $max, 50);
+  }
+}
+
+sub bar {
+  my ($val, $max, $chars) = @_;
+  return '#' x int(.5 + (($val/$max) * $chars));
+}
 
 =head1 SEE ALSO
 
