@@ -1,26 +1,12 @@
 use strict;
 use warnings;
 package AnyEvent::CurrentCost;
+BEGIN {
+  $AnyEvent::CurrentCost::VERSION = '1.111940';
+}
 
 # ABSTRACT: AnyEvent module for reading from Current Cost energy meters
 
-=head1 SYNOPSIS
-
-  # Create simple Current Cost reader with logging callback
-  AnyEvent::CurrentCost->new(callback => sub { print $_[0]->summary },
-                             device => '/dev/ttyUSB0');
-
-  # start event loop
-  AnyEvent->condvar->recv;
-
-=head1 DESCRIPTION
-
-AnyEvent module for reading from Current Cost energy meters.
-
-B<IMPORTANT:> This is an early release and the API is still subject to
-change.
-
-=cut
 
 use constant DEBUG => $ENV{ANYEVENT_CURRENT_COST_DEBUG};
 use base qw/Device::CurrentCost/;
@@ -29,32 +15,6 @@ use AnyEvent::Handle;
 use Carp qw/croak carp/;
 use Sub::Name;
 
-=method C<new(%params)>
-
-Constructs a new C<AnyEvent::CurrentCost> object.  The supported
-parameters are:
-
-=over
-
-=item device
-
-The name of the device to connect to.  The value should be a tty device
-name.  The default is C</dev/ttyUSB0>.
-
-=item callback
-
-The callback to execute when a message is received.
-
-=item history_callback
-
-A function, taking a sensor id, a time interval and a hash reference
-of data as arguments, to be called every time a new complete set of
-history data becomes available.  The data hash reference has keys of
-the number of intervals ago and values of the reading at that time.
-
-=back
-
-=cut
 
 sub new {
   my ($pkg, %p) = @_;
@@ -66,12 +26,6 @@ sub new {
 
 sub DESTROY { shift->cleanup }
 
-=method C<cleanup()>
-
-This method attempts to destroy any resources in the event of a
-disconnection or fatal error.
-
-=cut
 
 sub cleanup {
   my $self = shift;
@@ -86,11 +40,6 @@ sub _error {
   $self->{on_error}->($fatal, $message) if ($self->{on_error});
 }
 
-=method C<open()>
-
-This method opens the serial port and configures it.
-
-=cut
 
 sub open {
   my $self = shift;
@@ -128,12 +77,6 @@ sub _time_now {
   AnyEvent->now;
 }
 
-=method C<anyevent_read_type()>
-
-This method is used to register an L<AnyEvent::Handle> read type
-method to read Current Cost messages.
-
-=cut
 
 sub anyevent_read_type {
   my ($handle, $cb, $self) = @_;
@@ -151,3 +94,85 @@ sub anyevent_read_type {
 }
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+AnyEvent::CurrentCost - AnyEvent module for reading from Current Cost energy meters
+
+=head1 VERSION
+
+version 1.111940
+
+=head1 SYNOPSIS
+
+  # Create simple Current Cost reader with logging callback
+  AnyEvent::CurrentCost->new(callback => sub { print $_[0]->summary },
+                             device => '/dev/ttyUSB0');
+
+  # start event loop
+  AnyEvent->condvar->recv;
+
+=head1 DESCRIPTION
+
+AnyEvent module for reading from Current Cost energy meters.
+
+B<IMPORTANT:> This is an early release and the API is still subject to
+change.
+
+=head1 METHODS
+
+=head2 C<new(%params)>
+
+Constructs a new C<AnyEvent::CurrentCost> object.  The supported
+parameters are:
+
+=over
+
+=item device
+
+The name of the device to connect to.  The value should be a tty device
+name.  The default is C</dev/ttyUSB0>.
+
+=item callback
+
+The callback to execute when a message is received.
+
+=item history_callback
+
+A function, taking a sensor id, a time interval and a hash reference
+of data as arguments, to be called every time a new complete set of
+history data becomes available.  The data hash reference has keys of
+the number of intervals ago and values of the reading at that time.
+
+=back
+
+=head2 C<cleanup()>
+
+This method attempts to destroy any resources in the event of a
+disconnection or fatal error.
+
+=head2 C<open()>
+
+This method opens the serial port and configures it.
+
+=head2 C<anyevent_read_type()>
+
+This method is used to register an L<AnyEvent::Handle> read type
+method to read Current Cost messages.
+
+=head1 AUTHOR
+
+Mark Hindess <soft-cpan@temporalanomaly.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2011 by Mark Hindess.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+
