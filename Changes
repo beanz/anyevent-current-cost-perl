@@ -1,6 +1,7 @@
 Revision history for Perl extension AnyEvent::CurrentCost.
 
 {{$NEXT}}
+    - Fix prereqs.
 
 1.110792  2011-03-20 13:07:21 Europe/London
     - More discard timeout fixes.
