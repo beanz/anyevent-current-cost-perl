@@ -10,8 +10,8 @@ Homepage: http://search.cpan.org/dist/AnyEvent-CurrentCost/
 
 Package: libanyevent-currentcost-perl
 Architecture: all
-Depends: ${perl:Depends}, ${misc:Depends}, libdevice-currentcost-perl,
- libanyevent-perl, libsub-name-perl
+Depends: ${perl:Depends}, ${misc:Depends}, libsub-name-perl,
+ libdevice-currentcost-perl (>= 1.112970-1), libanyevent-perl
 Description: AnyEvent::CurrentCost Perl Module
  AnyEvent modules for reading from energy meters made by Current Cost
  (http://www.currentcost.com/).
