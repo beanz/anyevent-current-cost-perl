@@ -94,7 +94,6 @@ This method opens the serial port and configures it.
 
 sub open {
   my $self = shift;
-  my $fh = $self->SUPER::open;
   $self->_setup_handle($self->SUPER::open);
 }
 
@@ -117,11 +116,14 @@ sub _setup_handle {
                           }),
                          );
   $self->{handle} = $handle;
-  $handle->push_read(ref $self => $self,
-                     subname 'push_read_cb' => sub {
-                       $self->{callback}->(@_);
-                       return;
-                     });
+  $handle->on_read(subname 'on_read_cb' => sub {
+                     my ($hdl) = @_;
+                     $hdl->push_read(ref $self => $self,
+                                     subname 'push_read_cb' => sub {
+                                       $self->{callback}->(@_);
+                                       1;
+                                     });
+                   });
 }
 
 sub _time_now {
@@ -145,7 +147,7 @@ sub anyevent_read_type {
       return unless ($res);
       print STDERR "After: ", (unpack 'H*', $$rbuf), "\n" if DEBUG;
       $handle->rtimeout($self->{discard_timeout}) if ($$rbuf && length $$rbuf);
-      $res = $cb->($res) and return $res;
+      $res = $cb->($res);
     }
   }
 }
