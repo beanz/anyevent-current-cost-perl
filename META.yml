@@ -22,7 +22,7 @@ requires:
   AnyEvent::Handle: 0
   AnyEvent::SerialPort: 1.130171
   Carp: 0
-  Device::CurrentCost: 1.112970
+  Device::CurrentCost: 1.130190
   Device::CurrentCost::Constants: 0
   Getopt::Long: 0
   List::Util: 0

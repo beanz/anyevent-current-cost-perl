@@ -21,11 +21,6 @@ sub new {
   my ($pkg, %p) = @_;
   croak $pkg.q{->new: 'callback' parameter is required} unless ($p{callback});
   my $self = $pkg->SUPER::new(%p);
-
-  # catch issue when older version of Device::SerialPort is used
-  if (exists $p{filehandle} && !exists $self->{handle}) {
-    $self->open;
-  }
   $self;
 }
 
