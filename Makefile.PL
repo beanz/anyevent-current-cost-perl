@@ -30,6 +30,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "AnyEvent" => 0,
     "AnyEvent::Handle" => 0,
+    "AnyEvent::SerialPort" => 0,
     "Carp" => 0,
     "Device::CurrentCost" => "1.112970",
     "Device::CurrentCost::Constants" => 0,
