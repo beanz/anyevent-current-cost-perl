@@ -1,5 +1,9 @@
 Revision history for Perl extension AnyEvent::CurrentCost.
 
+1.130190  2013-01-19 17:38:04 Europe/London
+    - Fix unstable test.
+    - Use AnyEvent::SerialPort.
+
 1.112970  2011-10-24 22:25:54 Europe/London
     - Fix prereqs.
 

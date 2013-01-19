@@ -4,45 +4,48 @@ use warnings;
 
 
 
-use ExtUtils::MakeMaker 6.31;
+use ExtUtils::MakeMaker 6.30;
 
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'AnyEvent module for reading from Current Cost energy meters',
-  'AUTHOR' => 'Mark Hindess <soft-cpan@temporalanomaly.com>',
-  'BUILD_REQUIRES' => {
-    'English' => '0',
-    'IO::Pipe' => '0',
-    'Test::More' => '0',
-    'Test::Requires' => '0',
-    'Test::SharedFork' => '0',
-    'Test::Warn' => '0'
+  "ABSTRACT" => "AnyEvent module for reading from Current Cost energy meters",
+  "AUTHOR" => "Mark Hindess <soft-cpan\@temporalanomaly.com>",
+  "BUILD_REQUIRES" => {
+    "IO::Pipe" => 0,
+    "Test::More" => 0,
+    "Test::Requires" => 0,
+    "Test::SharedFork" => 0,
+    "Test::Warn" => 0
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.31'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'AnyEvent-CurrentCost',
-  'EXE_FILES' => [
-    'bin/anyevent-current-cost-reader'
+  "DISTNAME" => "AnyEvent-CurrentCost",
+  "EXE_FILES" => [
+    "bin/anyevent-current-cost-reader"
   ],
-  'LICENSE' => 'perl',
-  'NAME' => 'AnyEvent::CurrentCost',
-  'PREREQ_PM' => {
-    'AnyEvent' => '0',
-    'AnyEvent::Handle' => '0',
-    'Carp' => '0',
-    'Device::CurrentCost' => '1.112970',
-    'Device::CurrentCost::Constants' => '0',
-    'Getopt::Long' => '0',
-    'List::Util' => '0',
-    'Pod::Usage' => '0',
-    'Sub::Name' => '0',
-    'constant' => '0'
+  "LICENSE" => "perl",
+  "NAME" => "AnyEvent::CurrentCost",
+  "PREREQ_PM" => {
+    "AnyEvent" => 0,
+    "AnyEvent::Handle" => 0,
+    "AnyEvent::SerialPort" => "1.130171",
+    "Carp" => 0,
+    "Device::CurrentCost" => "1.130190",
+    "Device::CurrentCost::Constants" => 0,
+    "Getopt::Long" => 0,
+    "List::Util" => 0,
+    "Pod::Usage" => 0,
+    "Sub::Name" => 0,
+    "base" => 0,
+    "constant" => 0,
+    "strict" => 0,
+    "warnings" => 0
   },
-  'VERSION' => '1.112970',
-  'test' => {
-    'TESTS' => 't/*.t'
+  "VERSION" => "1.130190",
+  "test" => {
+    "TESTS" => "t/*.t"
   }
 );
 

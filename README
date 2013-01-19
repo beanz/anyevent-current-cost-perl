@@ -3,7 +3,7 @@ NAME
     energy meters
 
 VERSION
-    version 1.112970
+    version 1.130190
 
 SYNOPSIS
       # Create simple Current Cost reader with logging callback

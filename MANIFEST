@@ -18,9 +18,9 @@ lib/AnyEvent/CurrentCost.pm
 t/01-simple.t
 t/02-timeouts.t
 t/author-critic.t
+t/author-test-eol.t
 t/log/envy.reading.xml
 t/release-common_spelling.t
-t/release-eol.t
 t/release-kwalitee.t
 t/release-no-tabs.t
 t/release-pod-coverage.t

@@ -27,7 +27,7 @@ if ($pid == 0) {
   $pipe->autoflush;
   print $pipe q{<msg><src>CC128-v0.11</src><dsb>00596</dsb><time>17:02:42</time><tmpr>27.2</tmpr><sensor>0</sensor><id>00077</id><type>1</type><ch1><watts>01380</watts></ch1></msg><msg><src>truncated};
 
-  select undef, undef, undef, 0.5;
+  select undef, undef, undef, 1.5;
 
   print $pipe q{<msg><src>CC128-v0.11</src><dsb>00596</dsb><time>17:02:42</time><tmpr>27.2</tmpr><sensor>0</sensor><id>00077</id><type>1</type><ch1><watts>01999</watts></ch1></msg>};
 
@@ -38,12 +38,12 @@ if ($pid == 0) {
   $pipe->reader;
   my $cv = AnyEvent->condvar;
   my $dev = AnyEvent::CurrentCost->new(filehandle => $pipe,
-                                       discard_timeout => 0.1,
+                                       discard_timeout => 0.5,
                                        callback => sub { $cv->send($_[0]) });
   my $msg = $cv->recv;
   is($msg->value, 1380, 'first value');
   $cv = AnyEvent->condvar;
-  AnyEvent->timer(after => 0.5, sub { $cv->send });
+  AnyEvent->timer(after => 1.5, sub { $cv->send });
   warning_like { $msg = $cv->recv }
     {carped => qr/Discarding '<msg><src>truncated'/}, 'discard timeout';
   is($msg->value, 1999, 'second value');
